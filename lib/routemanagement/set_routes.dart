@@ -1,0 +1,10 @@
+const String rLoginScreen = '/LOGIN_SCREEN';
+const String rDashboard = '/DASHBOARD_SCREEN';
+const String rRecent = '/RECENT_SCREEN';
+const String rHistory = '/HISTORY_SCREEN';
+const String rBottomNavyBar = '/rBOTTOM_NAVY_BAR';
+const String rDrawer = '/DRAWER_SCREEN';
+const String rHomeScreen = '/HOME_SCREEN';
+const String rViewByAccounts = '/VIEW_BY_ACCOUNTS';
+const String rExelScreen = '/EXEL_FILES_SCREEN';
+const String rSplashScreen = '/SPLASH_SCREEN';
