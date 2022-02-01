@@ -30,6 +30,8 @@ class DashboardScreenController extends GetxController {
   RxBool connected = false.obs;
   RxString selectedAccount = 'Easy Paisa'.obs;
   RxString selectedPost = 'Jazz'.obs;
+  RxString date = ''.obs;
+  RxString nowTime = ''.obs;
 
   List<String> accountTypesList = [
     'Jazz Cash',
@@ -51,7 +53,7 @@ class DashboardScreenController extends GetxController {
     'easypaisa.png',
     'upaisa.png',
     'omni.png',
-    'cnic.png'
+    'postpaid.png'
   ];
   List postPaidccountsImages = [
     'jazzSim.png',
@@ -75,6 +77,7 @@ class DashboardScreenController extends GetxController {
         trxId: trxId.text,
         date: date,
         time: time,
+        network:selectedPost.value,
       );
       try {
         var response = await http.post(url,
@@ -114,6 +117,7 @@ class DashboardScreenController extends GetxController {
         trxId: trxId.text,
         date: date,
         time: time,
+        network:'',
       );
       try {
         var response = await http.post(url,
@@ -140,7 +144,9 @@ class DashboardScreenController extends GetxController {
   @override
   void onInit() {
     getItems();
+    getTimeAndDate();
     initPlatformState();
+
     super.onInit();
   }
 
@@ -221,6 +227,11 @@ class DashboardScreenController extends GetxController {
     SharedPreferences prfs = await SharedPreferences.getInstance();
     prfs.setBool('isConnected', val);
   }
+  void getTimeAndDate() {
+    final DateTime now = DateTime.now();
+    nowTime.value = DateFormat('hh:mm:ss a').format(now);
+    date.value = Components().getDate();
+  }
 
   void tesPrint() async {
     SharedPreferences prfs = await SharedPreferences.getInstance();
@@ -229,26 +240,47 @@ class DashboardScreenController extends GetxController {
     Get.back();
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
-        bluetooth.printCustom("---------------------------------", 3, 0);
-        bluetooth.printCustom("Dua  Communication", 5, 1);
-        bluetooth.printNewLine();
-        bluetooth.printCustom("Oppst: Maryam marraige Hall near", 3, 1);
-        bluetooth.printCustom("Zulfiqar Masjid Hirabad", 3, 1);
-        bluetooth.printCustom("Contact:03033111126", 3, 1);
-        bluetooth.printNewLine();
-        bluetooth.printLeftRight("time", "date", 0);
-        bluetooth.printCustom("---------------------------------", 3, 0);
-        bluetooth.printLeftRight("TrxID", data.trxId, 0);
-        bluetooth.printLeftRight("Name", data.customerName, 0);
-        bluetooth.printLeftRight("MSISDN", data.msisdn, 0);
-        bluetooth.printLeftRight("Account", data.selectedAccount, 0);
-        bluetooth.printLeftRight("Amount", data.amount, 0);
-        bluetooth.printCustom("---------------------------------", 3, 0);
-        bluetooth.printCustom("Receipt Charges Rs.10/=", 3, 1);
-        bluetooth.printCustom(line, 3, 1);
-        bluetooth.printNewLine();
-        bluetooth.printNewLine();
-        bluetooth.paperCut();
+        if(data.selectedAccount=='Post Paid Bill'){
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
+          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
+          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
+          bluetooth.printCustom("Contact:03033111126", 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printLeftRight("$nowTime", "$date", 0);
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printLeftRight("MSISDN", data.msisdn, 0);
+          bluetooth.printLeftRight("Account", data.selectedAccount, 0);
+          bluetooth.printLeftRight("Amount", data.amount, 0);
+          bluetooth.printCustom("--------------------------------", 1, 0);
+          bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
+          bluetooth.printCustom(line, 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+
+        }else{
+          bluetooth.printCustom("---------------------------------", 3, 0);
+          bluetooth.printCustom("Dua  Communication", 5, 1);
+          bluetooth.printNewLine();
+          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 3, 1);
+          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 3, 1);
+          bluetooth.printCustom("Contact:03033111126", 3, 1);
+          bluetooth.printNewLine();
+          bluetooth.printLeftRight("time", "date", 0);
+          bluetooth.printCustom("---------------------------------", 3, 0);
+          bluetooth.printLeftRight("TrxID", data.trxId, 0);
+          bluetooth.printLeftRight("Name", data.customerName, 0);
+          bluetooth.printLeftRight("MSISDN", data.msisdn, 0);
+          bluetooth.printLeftRight("Account", data.selectedAccount, 0);
+          bluetooth.printLeftRight("Amount", data.amount, 0);
+          bluetooth.printCustom("---------------------------------", 3, 0);
+          bluetooth.printCustom("Receipt Charges Rs.10/=", 3, 1);
+          bluetooth.printCustom(line, 3, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+        }
       } else {
         comnnts.myToast("Please connect your printer!");
       }

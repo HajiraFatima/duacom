@@ -11,6 +11,7 @@ class LoginScreenController extends GetxController {
   String screenName = 'login';
   Components comnnts = Components();
   var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/login.php');
+  String userName='';
 
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -22,15 +23,6 @@ class LoginScreenController extends GetxController {
   login() async {
      SharedPreferences prefs = await SharedPreferences.getInstance();
      comnnts.showDialog(false);
-    // if (name.text == 'duadua' && password.text == '123456') {
-    //   comnnts.hideDialog();
-    //   prefs.setString('isUser', 'true');
-    //   Get.toNamed(rHomeScreen);
-    // } else {
-    //   comnnts.hideDialog();
-    //   comnnts.myToast("ERROR..!");
-    // }
-
      try {
        var response = await http.post(url,
         headers: <String, String>{
@@ -43,9 +35,10 @@ class LoginScreenController extends GetxController {
 
     var result = convert.jsonDecode(response.body);
     if (result['result'] == 'true') {
+      userName = result['name'];
       comnnts.hideDialog();
       prefs.setString('isUser', 'true');
-      Get.offAndToNamed(rHomeScreen);
+      Get.offAndToNamed(rHomeScreen,arguments: userName);
     } else {
       comnnts.hideDialog();
       comnnts.myToast("ERROR..!");
@@ -59,9 +52,6 @@ class LoginScreenController extends GetxController {
 
   @override
   void onInit() {
-    name.text = 'duadua';
-    password.text = '123456';
-
     // TODO: implement onInit
     super.onInit();
   }

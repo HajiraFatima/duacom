@@ -97,8 +97,8 @@ class HistoryScreen extends GetView<HistoryScreenController> {
                                 picName = 'upaisa.png';
                               } else if (i.selectedAccount == 'Omni') {
                                 picName = 'omni.png';
-                              } else if (i.selectedAccount == 'CNIC') {
-                                picName = 'cnic.png';
+                              } else if (i.selectedAccount == 'Post Paid Bill') {
+                                picName = 'postpaid.png';
                               }
                               return Card(
                                 child: ListTile(

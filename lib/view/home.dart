@@ -77,6 +77,17 @@ class HomeScreen extends GetView<HomeScreenController> {
                                             color: Colors.white,
                                             fontSize: 30))),
                               ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text("${controller.userName}",
+                                    textAlign: TextAlign.justify,
+                                    style: GoogleFonts.adventPro(
+                                        textStyle: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 30))),
+                              ),
+
+
                               // Container(
                               //   alignment: Alignment.bottomLeft,
                               //   child: Text(controller.nowTime.value,
@@ -184,13 +195,13 @@ class HomeScreen extends GetView<HomeScreenController> {
                                               picName = 'omni.png';
                                               clr = Colors.orange;
                                             } else if (i.selectedAccount ==
-                                                'CNIC') {
-                                              picName = 'cnic.png';
-                                              clr = Colors.green;
+                                                'Post Paid Bill') {
+                                              picName = 'postpaid.png';
+                                              clr = Colors.black;
                                             }
                                             return GestureDetector(
                                               onTap: () {
-                                                singleRecord(i);
+                                                singleRecord(i,picName,clr);
                                               },
                                               child: Column(
                                                 mainAxisAlignment:
@@ -438,24 +449,74 @@ class HomeScreen extends GetView<HomeScreenController> {
   }
 }
 
-singleRecord(DashboardModel model) {
-  return Get.defaultDialog(
-      title: "${model.customerName}",
-      content: Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          dataRow('msisdn : ', model.msisdn),
-          dataRow('account : ', model.selectedAccount),
-          dataRow('amount : ', model.amount),
-          dataRow('trxID : ', model.trxId),
-          dataRow('date : ', model.date),
-          dataRow('time : ', model.time),
-        ],
-      ));
-}
+singleRecord(DashboardModel model,img,clr) {
 
+  if(model.selectedAccount == 'Post Paid Bill'){
+    return Get.defaultDialog(
+        title: "${model.customerName}",
+        content: Column(
+          children: [
+            Container(
+              margin:
+              const EdgeInsets.only(
+                  left: 4),
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          'assets/$img')),
+                  borderRadius:
+                  BorderRadius
+                      .circular(100),
+                  border: Border.all(
+                    color: clr,
+                    width: 3,
+                  )),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Divider(),
+            dataRow('msisdn : ', model.msisdn),
+            const Divider(),
+            dataRow('account : ', model.selectedAccount),
+            const Divider(),
+            dataRow('network : ', model.network),
+            const Divider(),
+            dataRow('amount : ', model.amount),
+            const Divider(),
+            dataRow('date : ', model.date),
+            const Divider(),
+            dataRow('time : ', model.time),
+          ],
+        ));
+  }else{
+    return Get.defaultDialog(
+        title: "${model.customerName}",
+        content: Column(
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Divider(),
+            dataRow('msisdn : ', model.msisdn),
+            Divider(),
+            dataRow('account : ', model.selectedAccount),
+            Divider(),
+            dataRow('amount : ', model.amount),
+            Divider(),
+            dataRow('trxID : ', model.trxId),
+            Divider(),
+            dataRow('date : ', model.date),
+            Divider(),
+            dataRow('time : ', model.time),
+          ],
+        ));
+  }
+
+
+}
 Widget clock() {
   return AnalogClock(
     decoration: BoxDecoration(
@@ -466,16 +527,16 @@ Widget clock() {
     isLive: true,
     useMilitaryTime: true,
     showAllNumbers: true,
-    hourHandColor: Colors.blue,
-    minuteHandColor: Colors.blue,
+    hourHandColor: Colors.white,
+    minuteHandColor: Colors.white,
     showSecondHand: true,
     numberColor: Colors.blue,
     showNumbers: true,
     textScaleFactor: 1.8,
     showTicks: true,
     tickColor: Colors.white,
-    digitalClockColor: Colors.blue,
-    secondHandColor: Colors.blue,
+    digitalClockColor: Colors.white,
+    secondHandColor: Colors.red,
     showDigitalClock: true,
     datetime: DateTime(2019, 1, 1, 9, 12, 15),
   );

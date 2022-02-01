@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duas/custom/components.dart';
 import 'package:duas/models/dashboard_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,8 @@ class HomeScreenController extends GetxController {
   var line = Uri.parse('https://mwdomain.waqasmehmood.com/duas/view_line.php');
   RxBool isScreenSet = false.obs;
   RxString nowTime = ''.obs;
-
+  Components comnnts = Components();
+  String userName=Get.arguments;
   void getTime() {
     final DateTime now = DateTime.now();
     nowTime.value = DateFormat('hh:mm:ss a').format(now);
@@ -34,8 +36,17 @@ class HomeScreenController extends GetxController {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   Future<void> getRecentRecords() async {
     recents10Records.clear();
-    var res = await http.get(url);
-    var data = convert.jsonDecode(res.body);
+    var todayDate = comnnts.getDate();
+    recents10Records.clear();
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: convert.jsonEncode({
+          'todayDate': todayDate,
+
+        }));
+    var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));

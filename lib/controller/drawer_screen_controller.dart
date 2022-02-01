@@ -13,6 +13,7 @@ class DrawerScreenController extends GetxController {
   Components comnnts = Components();
   TextEditingController addLine = TextEditingController();
   var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/last_line.php');
+  var line = Uri.parse('https://mwdomain.waqasmehmood.com/duas/view_line.php');
 
   var device;
   RxString selectedDevice = 'MTP-2'.obs;
@@ -132,6 +133,7 @@ class DrawerScreenController extends GetxController {
       if (result['result'] == 'true') {
         comnnts.hideDialog();
         comnnts.myToast("Line Successfully Added");
+        await getLastLineRefresh();
       } else {
         comnnts.hideDialog();
         comnnts.myToast("ERROR...!");
@@ -146,7 +148,15 @@ class DrawerScreenController extends GetxController {
     bluetooth.disconnect();
     connected.value = false;
   }
-
+  Future<void> getLastLineRefresh() async {
+    SharedPreferences prfs = await SharedPreferences.getInstance();
+    var res = await http.get(line);
+    var data = convert.jsonDecode(res.body);
+    if (data['status'] == 'true') {
+      prfs.setString('lastLine', data['result']['line']);
+      prfs.setString('isSet', data['result']['isSet']);
+    }
+  }
   void onOff() async {
     comnnts.showDialog(false);
     try {

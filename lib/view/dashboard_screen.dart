@@ -158,7 +158,7 @@ class DashboardScreen extends GetView<DashboardScreenController> {
             formater: controller.amountFormater,
             textType: TextInputType.number,
             icon: Icons.monetization_on_rounded,
-            controllers: controller.amount2,
+            controllers: controller.amount,
             validation: controller.amountValidation,
           ),
           const SizedBox(

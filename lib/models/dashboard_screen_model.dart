@@ -8,6 +8,7 @@ class DashboardModel {
   String trxId = '';
   String date = '';
   String time = '';
+  String network='';
 
   DashboardModel({
     required this.selectedAccount,
@@ -17,16 +18,18 @@ class DashboardModel {
     required this.trxId,
     required this.date,
     required this.time,
+    required this.network,
   });
 
   DashboardModel.fromJson(Map<String, dynamic> json) {
-    selectedAccount = json['selectedAccount'];
-    msisdn = json['msisdn'];
-    customerName = json['customerName'];
+    selectedAccount = json['selectedAccount']??'';
+    msisdn = json['msisdn']??'';
+    customerName = json['customerName']??'';
     amount = json['amount'];
-    trxId = json['trxId'];
-    date = json['date'];
-    time = json['time'];
+    trxId = json['trxId']??'';
+    date = json['date']??'';
+    time = json['time']??'';
+    network = json['network']??'';
   }
 
   Map<String, dynamic> toJson() {
@@ -38,11 +41,12 @@ class DashboardModel {
     data['trxId'] = this.trxId;
     data['date'] = this.date;
     data['time'] = this.time;
+    data['network'] = this.network;
     return data;
   }
 
   @override
   String toString() {
-    return 'DashboardModel{selectedAccount: $selectedAccount, msisdn: $msisdn, customerName: $customerName, amount: $amount, trxId: $trxId, date:$date,time:$time}';
+    return 'DashboardModel{selectedAccount: $selectedAccount, msisdn: $msisdn, customerName: $customerName, amount: $amount, trxId: $trxId, date:$date,time:$time,network:$network}';
   }
 }

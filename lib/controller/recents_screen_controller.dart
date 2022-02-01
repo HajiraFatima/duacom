@@ -21,9 +21,17 @@ class RecentScreenController extends GetxController {
   Components comnnts = Components();
   var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/recents.php');
   Future<void> getRecentRecords() async {
+    var todayDate = comnnts.getDate();
     recents10Records.clear();
-    var res = await http.get(url);
-    var data = convert.jsonDecode(res.body);
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: convert.jsonEncode({
+          'todayDate': todayDate,
+
+        }));
+    var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
@@ -73,25 +81,46 @@ class RecentScreenController extends GetxController {
     String line = prfs.getString('lastLine')!;
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
-        bluetooth.printCustom("--------------------------------", 0, 0);
-        bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
-        bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
-        bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
-        bluetooth.printCustom("Contact:03033111126", 1, 1);
-        bluetooth.printNewLine();
-        bluetooth.printLeftRight("$nowTime", "$date", 0);
-        bluetooth.printCustom("--------------------------------", 0, 0);
-        bluetooth.printLeftRight("TrxID", i.trxId, 0);
-        bluetooth.printLeftRight("Name", i.customerName, 0);
-        bluetooth.printLeftRight("MSISDN", i.msisdn, 0);
-        bluetooth.printLeftRight("Account", i.selectedAccount, 0);
-        bluetooth.printLeftRight("Amount", i.amount, 0);
-        bluetooth.printCustom("--------------------------------", 1, 0);
-        bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
-        bluetooth.printCustom(line, 1, 1);
-        bluetooth.printNewLine();
-        bluetooth.printNewLine();
-        bluetooth.paperCut();
+        if(i.selectedAccount=='Post Paid Bill'){
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
+          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
+          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
+          bluetooth.printCustom("Contact:03033111126", 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printLeftRight("$nowTime", "$date", 0);
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printLeftRight("MSISDN", i.msisdn, 0);
+          bluetooth.printLeftRight("Account", i.selectedAccount, 0);
+          bluetooth.printLeftRight("Amount", i.amount, 0);
+          bluetooth.printCustom("--------------------------------", 1, 0);
+          bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
+          bluetooth.printCustom(line, 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+
+        }else{
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
+          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
+          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
+          bluetooth.printCustom("Contact:03033111126", 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printLeftRight("$nowTime", "$date", 0);
+          bluetooth.printCustom("--------------------------------", 0, 0);
+          bluetooth.printLeftRight("TrxID", i.trxId, 0);
+          bluetooth.printLeftRight("Name", i.customerName, 0);
+          bluetooth.printLeftRight("MSISDN", i.msisdn, 0);
+          bluetooth.printLeftRight("Account", i.selectedAccount, 0);
+          bluetooth.printLeftRight("Amount", i.amount, 0);
+          bluetooth.printCustom("--------------------------------", 1, 0);
+          bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
+          bluetooth.printCustom(line, 1, 1);
+          bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.paperCut();
+        }
       } else {
         comnnts.myToast("Please connect your printer!");
       }

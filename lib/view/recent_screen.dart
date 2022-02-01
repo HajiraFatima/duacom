@@ -119,8 +119,8 @@ class RecentScreen extends GetView<RecentScreenController> {
                                 picName = 'upaisa.png';
                               } else if (i.selectedAccount == 'Omni') {
                                 picName = 'omni.png';
-                              } else if (i.selectedAccount == 'CNIC') {
-                                picName = 'cnic.png';
+                              } else if (i.selectedAccount == 'Post Paid Bill') {
+                                picName = 'postpaid.png';
                               }
                               return Card(
                                 child: ListTile(
@@ -152,7 +152,7 @@ class RecentScreen extends GetView<RecentScreenController> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("TrxId : ${i.trxId}"),
+                                      i.selectedAccount=='Post Paid Bill'? Container():Text("TrxId : ${i.trxId}"),
                                       Text("MSISDN : ${i.msisdn} "),
                                       Text("Date : ${i.date}"),
                                     ],
@@ -216,10 +216,10 @@ class SearchLocations extends SearchDelegate{
           picName = 'upaisa.png';
         } else if (filteredRecord[index].selectedAccount == 'Omni') {
           picName = 'omni.png';
-        } else if (filteredRecord[index].selectedAccount == 'CNIC') {
-          picName = 'cnic.png';
+        } else if (filteredRecord[index].selectedAccount == 'Post Paid Bill') {
+          picName = 'postpaid.png';
         }
-        print(picName);
+
         return Card(
           child: ListTile(
             title: Text(filteredRecord[index].customerName),
@@ -249,7 +249,7 @@ class SearchLocations extends SearchDelegate{
               crossAxisAlignment:
               CrossAxisAlignment.start,
               children: [
-                Text("TrxId : ${filteredRecord[index].trxId}"),
+                filteredRecord[index].trxId==''?Text(''):Text("TrxId : ${filteredRecord[index].trxId}"),
                 Text("MSISDN : ${filteredRecord[index].msisdn} "),
                 Text("Date : ${filteredRecord[index].date}"),
               ],
@@ -268,13 +268,25 @@ class SearchLocations extends SearchDelegate{
     return ListView.builder(
       itemCount: filteredRecord.length,
       itemBuilder: (BuildContext context, int index) {
+        var picName = '';
+        if (filteredRecord[index].selectedAccount == 'Jazz Cash') {
+          picName = 'jazzcash.jpg';
+        } else if (filteredRecord[index].selectedAccount == 'Easy Paisa') {
+          picName = 'easypaisa.png';
+        } else if (filteredRecord[index].selectedAccount == 'U Paisa') {
+          picName = 'upaisa.png';
+        } else if (filteredRecord[index].selectedAccount == 'Omni') {
+          picName = 'omni.png';
+        } else if (filteredRecord[index].selectedAccount == 'Post Paid Bill') {
+          picName = 'postpaid.png';
+        }
         return Card(
           child: ListTile(
             title: Text(filteredRecord[index].customerName),
             leading: CircleAvatar(
               backgroundColor: Colors.transparent,
               child: Image.asset(
-                'assets/cnic.png}',
+                'assets/$picName',
                 fit: BoxFit.fitHeight,
               ),
             ),
@@ -298,7 +310,7 @@ class SearchLocations extends SearchDelegate{
               crossAxisAlignment:
               CrossAxisAlignment.start,
               children: [
-                Text("TrxId : ${filteredRecord[index].trxId}"),
+                filteredRecord[index].trxId==''?Text(''):Text("TrxId : ${filteredRecord[index].trxId}"),
                 Text("MSISDN : ${filteredRecord[index].msisdn} "),
                 Text("Date : ${filteredRecord[index].date}"),
               ],
