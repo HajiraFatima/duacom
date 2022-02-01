@@ -79,12 +79,13 @@ class HomeScreen extends GetView<HomeScreenController> {
                               ),
                               Align(
                                 alignment: Alignment.topLeft,
-                                child: Text("${controller.userName}",
-                                    textAlign: TextAlign.justify,
-                                    style: GoogleFonts.adventPro(
-                                        textStyle: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 30))),
+                                child:Obx(()=> Text("${controller.userName}",
+                                      textAlign: TextAlign.justify,
+                                      style: GoogleFonts.adventPro(
+                                          textStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 30))),
+                                ),
                               ),
 
 

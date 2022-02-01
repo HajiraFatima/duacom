@@ -38,6 +38,7 @@ class LoginScreenController extends GetxController {
       userName = result['name'];
       comnnts.hideDialog();
       prefs.setString('isUser', 'true');
+      prefs.setString('username',result['name']);
       Get.offAndToNamed(rHomeScreen,arguments: userName);
     } else {
       comnnts.hideDialog();

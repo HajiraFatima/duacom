@@ -17,7 +17,7 @@ class HomeScreenController extends GetxController {
   RxBool isScreenSet = false.obs;
   RxString nowTime = ''.obs;
   Components comnnts = Components();
-  String userName=Get.arguments;
+  RxString userName = 'admin'.obs;
   void getTime() {
     final DateTime now = DateTime.now();
     nowTime.value = DateFormat('hh:mm:ss a').format(now);
@@ -30,7 +30,13 @@ class HomeScreenController extends GetxController {
     if (data['status'] == 'true') {
       prfs.setString('lastLine', data['result']['line']);
       prfs.setString('isSet', data['result']['isSet']);
+
     }
+  }
+
+  void getUsername()async{
+    SharedPreferences prfs = await SharedPreferences.getInstance();
+  userName.value = Get.arguments?? prfs.getString('username');
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -60,6 +66,7 @@ class HomeScreenController extends GetxController {
     if (data['status'] == 'true') {
       if (data['result']['isSet'] == '1') {
         getLastLine();
+        getUsername();
         getRecentRecords();
         isScreenSet.value = false;
       } else {
