@@ -103,6 +103,11 @@ class DashboardScreenController extends GetxController {
     }
   }
 
+  void checkTime(){
+    String time = getTime();
+    print(time);
+  }
+
   addData() async {
     if (formkey.currentState!.validate()) {
       comnnts.showDialog(false);
@@ -288,7 +293,7 @@ class DashboardScreenController extends GetxController {
 
   String getTime() {
     var timeNow = DateTime.now();
-    var formatter = DateFormat('hh:mm:ss');
+    var formatter = DateFormat('HH:mm:ss');
     var formatedDate = formatter.format(timeNow);
     var date =
         DateFormat.jm().format(DateFormat("hh:mm:ss").parse(formatedDate));

@@ -381,7 +381,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                             onTap: () {
                               Get.toNamed(rViewByAccounts);
                             },
-                            child: bottomContainer('history.png', 'Easy Paisa')),
+                            child: bottomContainer('history.png', 'Global Search')),
                       ))
                 ],
               ),
@@ -529,6 +529,7 @@ singleRecord(DashboardModel model,img,clr) {
 
 Widget clock() {
   return AnalogClock(
+
     decoration: BoxDecoration(
         border: Border.all(width: 2.0, color: Colors.blue),
         color: Colors.black,

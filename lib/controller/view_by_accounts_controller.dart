@@ -16,7 +16,7 @@ class ViewByAccountsController extends GetxController {
   RxList<DashboardModel> recents10Records = RxList<DashboardModel>();
   RxString date = ''.obs;
   RxString nowTime = ''.obs;
-  RxString pleasewait = 'Search A Record...'.obs;
+  RxString pleasewait = 'Search A Record'.obs;
   TextEditingController searchByValue = TextEditingController();
 
   var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/view_by_accounts.php');
