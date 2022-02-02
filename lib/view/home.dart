@@ -243,7 +243,17 @@ class HomeScreen extends GetView<HomeScreenController> {
                                             );
                                           }).toList(),
                                         )
-                                      : ListView())),
+                                      : ListView(
+                                    children: [
+                                      SizedBox(height: Get.height*0.1,),
+                                      Obx(()=>Center(
+                                        child: (Text(controller.pleasewait.value,
+                                          style:const TextStyle(
+                                              color: Colors.black, fontSize: 20),
+                                        )),
+                                      ))
+                                    ],
+                                  ))),
                             ),
                           ),
                           Align(
@@ -323,12 +333,16 @@ class HomeScreen extends GetView<HomeScreenController> {
                             Container(
                                 height: 100,
                                 width: 100,
-                                child: Image.asset(
-                                  'assets/history.png',
-                                  color: Color(0xff084379),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Image.asset(
+                                    'assets/report.png',
+
+                                    color: Color(0xff084379),
+                                  ),
                                 )),
                             Text(
-                              'Search',
+                              'Report',
                               style: GoogleFonts.adventPro(
                                   textStyle: const TextStyle(
                                       color: Colors.black, fontSize: 20)),
@@ -361,38 +375,13 @@ class HomeScreen extends GetView<HomeScreenController> {
                       left: Get.width * 0.01,
                       child: Container(
                         height: Get.height * 0.2,
-                        width: Get.width,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(rViewByAccounts,
-                                      arguments: 'Easy Paisa');
-                                },
-                                child: bottomContainer('e.png', 'Easy Paisa')),
-                            GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(rViewByAccounts,
-                                      arguments: 'Jazz Cash');
-                                },
-                                child:
-                                    bottomContainer('jazz.png', 'Jazz Cash')),
-                            GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(rViewByAccounts,
-                                      arguments: 'Omni');
-                                },
-                                child: bottomContainer('omni.png', 'Omni')),
-                            GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(rViewByAccounts,
-                                      arguments: 'U Paisa');
-                                },
-                                child:
-                                    bottomContainer('upaisa.png', 'U Paisa')),
-                          ],
-                        ),
+                        width: Get.width*0.91,
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        child: GestureDetector(
+                            onTap: () {
+                              Get.toNamed(rViewByAccounts);
+                            },
+                            child: bottomContainer('history.png', 'Easy Paisa')),
                       ))
                 ],
               ),
@@ -436,6 +425,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                 width: 100,
                 child: Image.asset(
                   'assets/${img}',
+                  color: Color(0xff084379),
                 )),
             Text(
               title,
@@ -479,17 +469,17 @@ singleRecord(DashboardModel model,img,clr) {
               height: 20,
             ),
             const Divider(),
-            dataRow('msisdn : ', model.msisdn),
+            dataRow('MSISDN : ', model.msisdn),
             const Divider(),
-            dataRow('account : ', model.selectedAccount),
+            dataRow('ACCOUNT : ', model.selectedAccount),
             const Divider(),
-            dataRow('network : ', model.network),
+            dataRow('NETWORK : ', model.network),
             const Divider(),
-            dataRow('amount : ', model.amount),
+            dataRow('AMOUNT : ', model.amount),
             const Divider(),
-            dataRow('date : ', model.date),
+            dataRow('DATE : ', model.date),
             const Divider(),
-            dataRow('time : ', model.time),
+            dataRow('TIME : ', model.time),
           ],
         ));
   }else{
@@ -497,27 +487,46 @@ singleRecord(DashboardModel model,img,clr) {
         title: "${model.customerName}",
         content: Column(
           children: [
+            Container(
+              margin:
+              const EdgeInsets.only(
+                  left: 4),
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          'assets/$img')),
+                  borderRadius:
+                  BorderRadius
+                      .circular(100),
+                  border: Border.all(
+                    color: clr,
+                    width: 3,
+                  )),
+            ),
             const SizedBox(
               height: 20,
             ),
             Divider(),
-            dataRow('msisdn : ', model.msisdn),
+            dataRow('MSISDN : ', model.msisdn),
             Divider(),
-            dataRow('account : ', model.selectedAccount),
+            dataRow('ACCOUNT : ', model.selectedAccount),
             Divider(),
-            dataRow('amount : ', model.amount),
+            dataRow('AMOUNT : ', model.amount),
             Divider(),
-            dataRow('trxID : ', model.trxId),
+            dataRow('TRXID : ', model.trxId),
             Divider(),
-            dataRow('date : ', model.date),
+            dataRow('DATE : ', model.date),
             Divider(),
-            dataRow('time : ', model.time),
+            dataRow('TIME : ', model.time),
           ],
         ));
   }
 
 
 }
+
 Widget clock() {
   return AnalogClock(
     decoration: BoxDecoration(

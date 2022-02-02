@@ -13,7 +13,7 @@ class ViewByAccountsScreen extends GetView<ViewByAccountsController> {
             body: Stack(children: [
       Container(height: Get.height, width: Get.width, child: Text('sadasdsad')),
       Container(
-        height: Get.height * 0.2,
+        height: Get.height * 0.25,
         width: Get.width,
         decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [
@@ -56,12 +56,18 @@ class ViewByAccountsScreen extends GetView<ViewByAccountsController> {
                             textStyle: const TextStyle(
                                 color: Colors.white, fontSize: 30))),
                   ),
+
                 ],
               ),
             ),
           ),
+
         ],
       ),
+              Positioned(
+                  top: Get.height*0.16,
+                  width: Get.width*1,
+                  child: searchByNumberOrName()),
       Positioned(
           top: Get.height * 0.2,
           child: SizedBox(
@@ -127,5 +133,40 @@ class ViewByAccountsScreen extends GetView<ViewByAccountsController> {
             ),
           ))
     ])));
+  }
+
+  Widget searchByNumberOrName(){
+    return Form(
+      key: controller.formkey,
+      child: Row(
+        children: [
+           Expanded(flex: 8,
+          child:  Container(
+            margin: EdgeInsets.only(left: Get.width*0.11),
+            child:  TextFormField(
+              controller: controller.searchByValue,
+              validator: controller.searchValidation,
+              decoration: const InputDecoration(
+                hintText: 'Search By No or Name',
+                hintStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                    borderSide:  BorderSide(color: Colors.blue)) ,
+                border:  OutlineInputBorder(
+                    borderSide:  BorderSide(color: Colors.blue)),
+              ),
+            ),
+          ),
+          ),
+          Expanded(flex: 2,
+          child: IconButton(
+              onPressed: (){
+                controller.validate();
+              },
+             icon:Icon(Icons.search,color: Colors.white,size: 25,)),
+          ),
+
+        ],
+      ),
+    );
   }
 }

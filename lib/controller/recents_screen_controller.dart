@@ -20,7 +20,47 @@ class RecentScreenController extends GetxController {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   Components comnnts = Components();
   var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/recents.php');
+  RxString selectedAccount = 'Easy Paisa'.obs;
+  RxString pleasewait = 'Please wait...'.obs;
+  List<String> accountTypesList = [
+    'Jazz Cash',
+    'Easy Paisa',
+    'U Paisa',
+    'Omni',
+    'Post Paid Bill'
+  ];
+  List accountTypesImages = [
+    'jazzcash.jpg',
+    'easypaisa.png',
+    'upaisa.png',
+    'omni.png',
+    'postpaid.png'
+  ];
+  List<DropdownMenuItem<String>> getItems() {
+    List<DropdownMenuItem<String>> items = [];
+
+    for (int i = 0; i < accountTypesList.length; i++) {
+      items.add(DropdownMenuItem(
+        child: Container(
+          height: 50,
+          child: ListTile(
+            leading: CircleAvatar(
+                radius: 10,
+                backgroundColor: Colors.white,
+                child: Image.asset('assets/${accountTypesImages[i]}')),
+            title: Text(accountTypesList[i]),
+          ),
+        ),
+        value: accountTypesList[i],
+      ));
+    }
+
+    return items;
+  }
+
   Future<void> getRecentRecords() async {
+
+
     var todayDate = comnnts.getDate();
     recents10Records.clear();
     var response = await http.post(url,
@@ -29,16 +69,47 @@ class RecentScreenController extends GetxController {
         },
         body: convert.jsonEncode({
           'todayDate': todayDate,
+          'selectedAccount':false,
 
         }));
     var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
+      pleasewait.value = 'Please wait...';
+
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
       }
+    }else{
+      pleasewait.value = 'No Any Record Found';
+
     }
   }
+  Future<void> getRecentRecordsByAccount() async {
+    comnnts.showDialog(false);
+    var todayDate = comnnts.getDate();
+    recents10Records.clear();
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: convert.jsonEncode({
+          'todayDate': todayDate,
+          'selectedAccount':selectedAccount.value
 
+        }));
+    var data = convert.jsonDecode(response.body);
+    print(data);
+    if (data['status'] == 'true') {
+      comnnts.hideDialog();
+      pleasewait.value = 'Please wait...';
+      for (var fetch in data['result']) {
+        recents10Records.add(DashboardModel.fromJson(fetch));
+      }
+    }else if(data['status'] == 'false'){
+      comnnts.hideDialog();
+      pleasewait.value = 'No Any Record Found';
+    }
+  }
   RxList filteredRecord = [].obs;
   void filterTest(val) {
     List allItems = [];
@@ -55,26 +126,7 @@ class RecentScreenController extends GetxController {
     }
   }
 
-  // void filterTest(value) {
-  //   filteredRecord.clear();
-  //   for (var recent in recents10Records) {
-  //     if (recent.msisdn.contains(value)) {
-  //       recent.msisdn.contains(other)=>print()
-  //       if (filteredRecord.isNotEmpty) {
-  //         // for (var val in filteredRecord) {
-  //         //   if (val != value) {
-  //         //     print("::::::: $value");
-  //         //     filteredRecord.add(recent.msisdn);
-  //         //   }
-  //         // }
-  //       } else {
-  //         // filteredRecord.add(recent.msisdn);
-  //       }
-  //     }
 
-  //     // print(filteredRecord);
-  //   }
-  // }
 
   void tesPrint(DashboardModel i) async {
     SharedPreferences prfs = await SharedPreferences.getInstance();

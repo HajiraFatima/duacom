@@ -84,7 +84,7 @@ class RecentScreen extends GetView<RecentScreenController> {
           ),
 
           Positioned(
-              top: Get.height * 0.22,
+              top: Get.height * 0.16,
               right: Get.width * 0.05,
               child: IconButton(
                 icon: Icon(Icons.search,   color: Colors.white),
@@ -95,6 +95,10 @@ class RecentScreen extends GetView<RecentScreenController> {
                   );
                 },
               )),
+          Positioned(
+              top: Get.height * 0.22,
+              right: Get.width * 0.05,
+              child:accountsDropDown()),
           Positioned(top: Get.height * 0.28, child: Divider()),
           Positioned(
             top: Get.height * 0.3,
@@ -111,72 +115,217 @@ class RecentScreen extends GetView<RecentScreenController> {
                             children: controller.recents10Records.map((i) {
 
                               var picName = '';
+                              Color clr = Colors.blue;
+
                               if (i.selectedAccount == 'Jazz Cash') {
                                 picName = 'jazzcash.jpg';
+                                clr = Colors.orange;
                               } else if (i.selectedAccount == 'Easy Paisa') {
                                 picName = 'easypaisa.png';
+                                clr = Colors.green;
                               } else if (i.selectedAccount == 'U Paisa') {
                                 picName = 'upaisa.png';
+                                clr = Colors.blue;
                               } else if (i.selectedAccount == 'Omni') {
                                 picName = 'omni.png';
+                                clr = Colors.orange;
                               } else if (i.selectedAccount == 'Post Paid Bill') {
                                 picName = 'postpaid.png';
+                                clr = Colors.black;
                               }
-                              return Card(
-                                child: ListTile(
-                                  title: Text(i.customerName),
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    child: Image.asset(
-                                      'assets/${picName}',
-                                      fit: BoxFit.fitHeight,
+                              return GestureDetector(
+                                onTap: () {
+                                  singleRecord(i,picName,clr);
+                                },
+                                child:Card(
+                                  child: ListTile(
+                                    title: Text(i.customerName),
+                                    leading: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      child: Image.asset(
+                                        'assets/${picName}',
+                                        fit: BoxFit.fitHeight,
+                                      ),
                                     ),
-                                  ),
-                                  trailing: Column(
-                                      mainAxisSize: MainAxisSize.min,
+                                    trailing: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                              child: Text(i
+                                                  .time)), // IconButton(icon:Icon(Icons.print),onPressed: (){},),
+                                          Expanded(
+                                              child: IconButton(
+                                            icon: const Icon(Icons.print),
+                                            onPressed: () {
+                                              controller.tesPrint(i);
+                                            },
+                                          )),
+                                        ]),
+                                    subtitle: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                            child: Text(i
-                                                .time)), // IconButton(icon:Icon(Icons.print),onPressed: (){},),
-                                        Expanded(
-                                            child: IconButton(
-                                          icon: const Icon(Icons.print),
-                                          onPressed: () {
-                                            controller.tesPrint(i);
-                                          },
-                                        )),
-                                      ]),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      i.selectedAccount=='Post Paid Bill'? Container():Text("TrxId : ${i.trxId}"),
-                                      Text("MSISDN : ${i.msisdn} "),
-                                      Text("Date : ${i.date}"),
-                                    ],
+                                        i.selectedAccount=='Post Paid Bill'? Container():Text("TrxId : ${i.trxId}"),
+                                        Text("MSISDN : ${i.msisdn} "),
+                                        Text("Date : ${i.date}"),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
                             }).toList(),
-                          ):ListView()))
+                          ):ListView(
+                      children: [
+                        SizedBox(
+                          height: Get.height*0.3,
+
+                        ),
+                        Obx(()=>Center(
+                          child: (Text(controller.pleasewait.value,
+                          style: TextStyle(
+                          color: Colors.black, fontSize: 20),
+                          )),
+                        ))
+                      ],
+                    )))
             )
           ),
         ],
       ),
     )));
   }
+  singleRecord(DashboardModel model,img,clr) {
 
-  Widget searchField() {
-    return Row(children: [
-      TextField(
-        controller: controller.search,
-        onChanged: (value) {},
-      ),
-      Chip(label: Icon(Icons.close)),
-    ]);
+    if(model.selectedAccount == 'Post Paid Bill'){
+      return Get.defaultDialog(
+          title: "${model.customerName}",
+          content: Column(
+            children: [
+              Container(
+                margin:
+                const EdgeInsets.only(
+                    left: 4),
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                            'assets/$img')),
+                    borderRadius:
+                    BorderRadius
+                        .circular(100),
+                    border: Border.all(
+                      color: clr,
+                      width: 3,
+                    )),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Divider(),
+              dataRow('MSISDN : ', model.msisdn),
+              const Divider(),
+              dataRow('ACCOUNT : ', model.selectedAccount),
+              const Divider(),
+              dataRow('NETWORK : ', model.network),
+              const Divider(),
+              dataRow('AMOUNT : ', model.amount),
+              const Divider(),
+              dataRow('DATE : ', model.date),
+              const Divider(),
+              dataRow('TIME : ', model.time),
+            ],
+          ));
+    }else{
+      return Get.defaultDialog(
+          title: "${model.customerName}",
+          content: Column(
+            children: [
+              Container(
+                margin:
+                const EdgeInsets.only(
+                    left: 4),
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                            'assets/$img')),
+                    borderRadius:
+                    BorderRadius
+                        .circular(100),
+                    border: Border.all(
+                      color: clr,
+                      width: 3,
+                    )),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Divider(),
+              dataRow('MSISDN : ', model.msisdn),
+              Divider(),
+              dataRow('ACCOUNT : ', model.selectedAccount),
+              Divider(),
+              dataRow('AMOUNT : ', model.amount),
+              Divider(),
+              dataRow('TRXID : ', model.trxId),
+              Divider(),
+              dataRow('DATE : ', model.date),
+              Divider(),
+              dataRow('TIME : ', model.time),
+            ],
+          ));
+    }
   }
+  Widget dataRow(title, text) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+            flex: 5,
+            child: Container(
+              child: Text(title),
+            )),
+        Expanded(
+            flex: 5,
+            child: Container(
+              child: Text(text),
+            )),
+      ],
+    );
+  }
+
+
+  Widget accountsDropDown() {
+    return  SizedBox(
+      width: Get.width*0.9,
+      height: 50,
+      child: Obx(
+            () => DecoratedBox(
+              decoration:const BoxDecoration(
+                color:Colors.white30,
+              ),
+              child: DropdownButton(
+
+
+               iconEnabledColor: Colors.white,
+                underline: const SizedBox(),
+                isExpanded: true,
+                value: controller.selectedAccount.value,
+                items: controller.getItems(),
+                onChanged: (value) {
+                  controller.selectedAccount.value = value.toString();
+                  controller.getRecentRecordsByAccount();
+          },
+        ),
+            ),
+      ),
+    );
+  }
+
 }
 
 class SearchLocations extends SearchDelegate{
@@ -202,70 +351,47 @@ class SearchLocations extends SearchDelegate{
 
   @override
   Widget buildResults(BuildContext context) {
-    final List<DashboardModel> filteredRecord = controller.recents10Records
-        .where((val) => val.msisdn.contains(query)).toList();
-    return ListView.builder(
-      itemCount: filteredRecord.length,
-      itemBuilder: (BuildContext context, int index) {
-        var picName = '';
-        if (filteredRecord[index].selectedAccount == 'Jazz Cash') {
-          picName = 'jazzcash.jpg';
-        } else if (filteredRecord[index].selectedAccount == 'Easy Paisa') {
-          picName = 'easypaisa.png';
-        } else if (filteredRecord[index].selectedAccount == 'U Paisa') {
-          picName = 'upaisa.png';
-        } else if (filteredRecord[index].selectedAccount == 'Omni') {
-          picName = 'omni.png';
-        } else if (filteredRecord[index].selectedAccount == 'Post Paid Bill') {
-          picName = 'postpaid.png';
-        }
+    List<DashboardModel> filteredRecord = [];
 
-        return Card(
-          child: ListTile(
-            title: Text(filteredRecord[index].customerName),
-            leading: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Image.asset(
-                'assets/$picName}',
-                fit: BoxFit.fitHeight,
-              ),
-            ),
-            trailing: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: Text(filteredRecord[index].time)),
-                  Expanded(
-                      child: IconButton(
-                        icon: const Icon(Icons.print),
-                        onPressed: () {
-                          controller.tesPrint(filteredRecord[index]);
-                        },
-                      )),
-                ]),
-            subtitle: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-              children: [
-                filteredRecord[index].trxId==''?Text(''):Text("TrxId : ${filteredRecord[index].trxId}"),
-                Text("MSISDN : ${filteredRecord[index].msisdn} "),
-                Text("Date : ${filteredRecord[index].date}"),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+
+
+    if(controller.recents10Records
+        .where((val) => val.msisdn.contains(query)).isNotEmpty){
+
+      filteredRecord = controller.recents10Records
+          .where((val) => val.msisdn.contains(query)).toList();
+    }
+    if(controller.recents10Records
+        .where((val) => val.customerName.toLowerCase().contains(query.toLowerCase())).isNotEmpty){
+      filteredRecord = controller.recents10Records
+          .where((val) => val.customerName.toLowerCase().contains(query.toLowerCase())).toList();
+    }
+    return suggestions(filteredRecord);
+
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
 
-    final List<DashboardModel> filteredRecord = controller.recents10Records
-        .where((val) => val.msisdn.contains(query)).toList();
-    return ListView.builder(
+     List<DashboardModel> filteredRecord = [];
+
+
+     if(controller.recents10Records
+         .where((val) => val.msisdn.contains(query)).isNotEmpty){
+       filteredRecord = controller.recents10Records
+           .where((val) => val.msisdn.contains(query)).toList();
+     }
+     if(controller.recents10Records
+         .where((val) => val.customerName.toLowerCase().contains(query.toLowerCase())).isNotEmpty){
+       filteredRecord = controller.recents10Records
+           .where((val) => val.customerName.toLowerCase().contains(query.toLowerCase())).toList();
+     }
+    return suggestions(filteredRecord);
+
+  }
+
+  Widget suggestions(List<DashboardModel> filteredRecord){
+      return ListView.builder(
       itemCount: filteredRecord.length,
       itemBuilder: (BuildContext context, int index) {
         var picName = '';
@@ -319,7 +445,6 @@ class SearchLocations extends SearchDelegate{
         );
       },
     );
-
   }
 
 }

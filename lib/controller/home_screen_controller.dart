@@ -18,6 +18,7 @@ class HomeScreenController extends GetxController {
   RxString nowTime = ''.obs;
   Components comnnts = Components();
   RxString userName = 'admin'.obs;
+  RxString pleasewait = 'Please wait...'.obs;
   void getTime() {
     final DateTime now = DateTime.now();
     nowTime.value = DateFormat('hh:mm:ss a').format(now);
@@ -44,19 +45,24 @@ class HomeScreenController extends GetxController {
     recents10Records.clear();
     var todayDate = comnnts.getDate();
     recents10Records.clear();
+
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: convert.jsonEncode({
           'todayDate': todayDate,
+          'selectedAccount':false,
 
         }));
     var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
+      pleasewait.value = 'Please wait...';
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
       }
+    }else{
+      pleasewait.value = 'No Any Record Found';
     }
   }
 

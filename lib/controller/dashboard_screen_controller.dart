@@ -129,6 +129,10 @@ class DashboardScreenController extends GetxController {
         if (result['result'] == 'true') {
           comnnts.hideDialog();
           comnnts.myToast("Record Successfully Added");
+          msisdn.clear();
+          customerName.clear();
+          amount.clear();
+          trxId.clear();
           comnnts.confirmDialog();
         } else {
           comnnts.hideDialog();
@@ -152,13 +156,6 @@ class DashboardScreenController extends GetxController {
 
   List<DropdownMenuItem<String>> getItems() {
     List<DropdownMenuItem<String>> items = [];
-
-    // accountTypesList.map((val) => {
-    //       items.add(DropdownMenuItem(
-    //         child: Text(val),
-    //         value: val,
-    //       ))
-    //     });
 
     for (int i = 0; i < accountTypesList.length; i++) {
       items.add(DropdownMenuItem(
