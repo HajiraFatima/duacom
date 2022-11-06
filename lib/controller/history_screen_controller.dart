@@ -1,18 +1,20 @@
+import 'dart:convert' as convert;
 import 'dart:io';
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'package:flutter/material.dart';
 import 'package:duas/custom/components.dart';
 import 'package:duas/models/dashboard_screen_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert' as convert;
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+
+import '../custom/ip_settings.dart';
 
 class HistoryScreenController extends GetxController {
   String screenName = 'History';
@@ -26,7 +28,7 @@ class HistoryScreenController extends GetxController {
   RxString nowTime = ''.obs;
 
   RxList<DashboardModel> records = RxList<DashboardModel>();
-  var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/fetch.php');
+  var url = Uri.parse('http://$kPrimaryId/duas_php_files/duas/fetch.php');
 
   Future<void> getRecordsByDate() async {
     comnnts.showDialog(false);
@@ -54,7 +56,6 @@ class HistoryScreenController extends GetxController {
     } catch (er) {
       comnnts.hideDialog();
       comnnts.showDialog(true, title: 'ERROR...!', error: true);
-
     }
   }
 
@@ -106,6 +107,7 @@ class HistoryScreenController extends GetxController {
       return null;
     }
   }
+
   void getTimeAndDate() {
     final DateTime now = DateTime.now();
     nowTime.value = DateFormat('hh:mm:ss a').format(now);
@@ -117,7 +119,7 @@ class HistoryScreenController extends GetxController {
     String line = prfs.getString('lastLine')!;
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
-        if(i.selectedAccount=='Post Paid Bill'){
+        if (i.selectedAccount == 'Post Paid Bill') {
           bluetooth.printCustom("--------------------------------", 0, 0);
           bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
           bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
@@ -135,8 +137,7 @@ class HistoryScreenController extends GetxController {
           bluetooth.printNewLine();
           bluetooth.printNewLine();
           bluetooth.paperCut();
-
-        }else{
+        } else {
           bluetooth.printCustom("---------------------------------", 3, 0);
           bluetooth.printCustom("Dua  Communication", 5, 1);
           bluetooth.printNewLine();

@@ -1,13 +1,10 @@
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:duas/controller/dashboard_screen_controller.dart';
-import 'package:duas/view/dashboard_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-import 'package:get/get.dart';
 
 class Components {
   AppBar customAppBar(title, color) {
@@ -31,7 +28,7 @@ class Components {
     return formatedDate;
   }
 
-  SimpleFontelicoProgressDialog _dialog = SimpleFontelicoProgressDialog(
+  final SimpleFontelicoProgressDialog _dialog = SimpleFontelicoProgressDialog(
       context: Get.context, barrierDimisable: false);
 
   void showDialog(isDurationAllow, {title, error = false}) async {

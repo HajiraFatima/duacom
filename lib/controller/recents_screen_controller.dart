@@ -1,3 +1,5 @@
+import 'dart:convert' as convert;
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:duas/custom/components.dart';
 import 'package:duas/models/dashboard_screen_model.dart';
@@ -6,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'dart:convert' as convert;
-
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../custom/ip_settings.dart';
 
 class RecentScreenController extends GetxController {
   String screenName = 'Recents';
@@ -17,9 +19,10 @@ class RecentScreenController extends GetxController {
   RxBool isSearchOn = false.obs;
   TextEditingController search = TextEditingController();
   RxList<DashboardModel> recents10Records = RxList<DashboardModel>();
+
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   Components comnnts = Components();
-  var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/recents.php');
+  var url = Uri.parse('http://$kPrimaryId/duas_php_files/recents.php');
   RxString selectedAccount = 'Easy Paisa'.obs;
   RxString pleasewait = 'Please wait...'.obs;
   List<String> accountTypesList = [
@@ -59,8 +62,6 @@ class RecentScreenController extends GetxController {
   }
 
   Future<void> getRecentRecords() async {
-
-
     var todayDate = comnnts.getDate();
     recents10Records.clear();
     var response = await http.post(url,
@@ -69,8 +70,7 @@ class RecentScreenController extends GetxController {
         },
         body: convert.jsonEncode({
           'todayDate': todayDate,
-          'selectedAccount':false,
-
+          'selectedAccount': false,
         }));
     var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
@@ -79,11 +79,11 @@ class RecentScreenController extends GetxController {
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
       }
-    }else{
+    } else {
       pleasewait.value = 'No Any Record Found';
-
     }
   }
+
   Future<void> getRecentRecordsByAccount() async {
     comnnts.showDialog(false);
     var todayDate = comnnts.getDate();
@@ -94,8 +94,7 @@ class RecentScreenController extends GetxController {
         },
         body: convert.jsonEncode({
           'todayDate': todayDate,
-          'selectedAccount':selectedAccount.value
-
+          'selectedAccount': selectedAccount.value
         }));
     var data = convert.jsonDecode(response.body);
     print(data);
@@ -105,11 +104,12 @@ class RecentScreenController extends GetxController {
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
       }
-    }else if(data['status'] == 'false'){
+    } else if (data['status'] == 'false') {
       comnnts.hideDialog();
       pleasewait.value = 'No Any Record Found';
     }
   }
+
   RxList filteredRecord = [].obs;
   void filterTest(val) {
     List allItems = [];
@@ -126,14 +126,12 @@ class RecentScreenController extends GetxController {
     }
   }
 
-
-
   void tesPrint(DashboardModel i) async {
     SharedPreferences prfs = await SharedPreferences.getInstance();
     String line = prfs.getString('lastLine')!;
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
-        if(i.selectedAccount=='Post Paid Bill'){
+        if (i.selectedAccount == 'Post Paid Bill') {
           bluetooth.printCustom("--------------------------------", 0, 0);
           bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
           bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
@@ -151,8 +149,7 @@ class RecentScreenController extends GetxController {
           bluetooth.printNewLine();
           bluetooth.printNewLine();
           bluetooth.paperCut();
-
-        }else{
+        } else {
           bluetooth.printCustom("--------------------------------", 0, 0);
           bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
           bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
@@ -193,4 +190,3 @@ class RecentScreenController extends GetxController {
     super.onInit();
   }
 }
-

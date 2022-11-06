@@ -33,7 +33,7 @@ dependencies:
   get:
   shared_preferences:
   intl:
-  simple_fontellico_progress_dialog:
+  simple_fontellico_progress_dialog: ^0.2.1
   flutter_cupertino_datetime_picker: 
   blue_thermal_printer:
   path_provider:
@@ -43,8 +43,8 @@ dependencies:
   permission_handler:
   google_fonts:
   mask_text_input_formatter:
-  analog_clock: 
-  
+  analog_clock:
+  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
 
 
 

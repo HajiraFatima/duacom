@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert' as convert;
 
 import 'package:duas/custom/components.dart';
 import 'package:duas/models/dashboard_screen_model.dart';
@@ -6,14 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../custom/ip_settings.dart';
 
 class HomeScreenController extends GetxController {
   RxList<DashboardModel> recents10Records = RxList<DashboardModel>();
 
-  var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/recents.php');
-  var line = Uri.parse('https://mwdomain.waqasmehmood.com/duas/view_line.php');
+  var url = Uri.parse('http://$kPrimaryId/duas_php_files/recents.php');
+  var line = Uri.parse('http://$kPrimaryId/duas_php_files/view_line.php');
+
   RxBool isScreenSet = false.obs;
   RxString nowTime = ''.obs;
   Components comnnts = Components();
@@ -31,13 +34,12 @@ class HomeScreenController extends GetxController {
     if (data['status'] == 'true') {
       prfs.setString('lastLine', data['result']['line']);
       prfs.setString('isSet', data['result']['isSet']);
-
     }
   }
 
-  void getUsername()async{
+  void getUsername() async {
     SharedPreferences prfs = await SharedPreferences.getInstance();
-  userName.value = Get.arguments?? prfs.getString('username');
+    userName.value = Get.arguments ?? prfs.getString('username');
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -52,8 +54,7 @@ class HomeScreenController extends GetxController {
         },
         body: convert.jsonEncode({
           'todayDate': todayDate,
-          'selectedAccount':false,
-
+          'selectedAccount': false,
         }));
     var data = convert.jsonDecode(response.body);
     if (data['status'] == 'true') {
@@ -61,7 +62,7 @@ class HomeScreenController extends GetxController {
       for (var fetch in data['result']) {
         recents10Records.add(DashboardModel.fromJson(fetch));
       }
-    }else{
+    } else {
       pleasewait.value = 'No Any Record Found';
     }
   }

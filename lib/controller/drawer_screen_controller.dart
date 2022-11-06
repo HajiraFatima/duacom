@@ -1,10 +1,12 @@
+import 'dart:convert' as convert;
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:duas/custom/components.dart';
+import 'package:duas/custom/ip_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:duas/custom/components.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerScreenController extends GetxController {
   String screenName = '';
@@ -12,8 +14,8 @@ class DrawerScreenController extends GetxController {
   RxList<BluetoothDevice> _devices = RxList<BluetoothDevice>();
   Components comnnts = Components();
   TextEditingController addLine = TextEditingController();
-  var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/last_line.php');
-  var line = Uri.parse('https://mwdomain.waqasmehmood.com/duas/view_line.php');
+  var url = Uri.parse('http://$kPrimaryId/duas_php_files/last_line.php');
+  var line = Uri.parse('http://$kPrimaryId/duas_php_files/view_line.php');
 
   var device;
   RxString selectedDevice = 'MTP-2'.obs;
@@ -148,6 +150,7 @@ class DrawerScreenController extends GetxController {
     bluetooth.disconnect();
     connected.value = false;
   }
+
   Future<void> getLastLineRefresh() async {
     SharedPreferences prfs = await SharedPreferences.getInstance();
     var res = await http.get(line);
@@ -157,6 +160,7 @@ class DrawerScreenController extends GetxController {
       prfs.setString('isSet', data['result']['isSet']);
     }
   }
+
   void onOff() async {
     comnnts.showDialog(false);
     try {

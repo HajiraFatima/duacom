@@ -1,3 +1,5 @@
+import 'dart:convert' as convert;
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:duas/custom/components.dart';
 import 'package:duas/models/dashboard_screen_model.dart';
@@ -6,11 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'dart:convert' as convert;
-
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../custom/ip_settings.dart';
 
 class DashboardScreenController extends GetxController {
   TextEditingController msisdn = TextEditingController();
@@ -20,8 +21,12 @@ class DashboardScreenController extends GetxController {
   TextEditingController trxId = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   GlobalKey<FormState> formkey2 = GlobalKey<FormState>();
+  RxList<DashboardModel> datas = RxList<DashboardModel>();
 
-  var url = Uri.parse('https://mwdomain.waqasmehmood.com/duas/');
+  var url = Uri.parse('http://$kPrimaryId/duas_php_files/duas/');
+  var last_record =
+      Uri.parse('http://$kPrimaryId/duas_php_files/last_record.php');
+
   Components comnnts = Components();
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   RxList<BluetoothDevice> _devices = RxList<BluetoothDevice>();
@@ -77,7 +82,7 @@ class DashboardScreenController extends GetxController {
         trxId: trxId.text,
         date: date,
         time: time,
-        network:selectedPost.value,
+        network: selectedPost.value,
       );
       try {
         var response = await http.post(url,
@@ -103,7 +108,7 @@ class DashboardScreenController extends GetxController {
     }
   }
 
-  void checkTime(){
+  void checkTime() {
     String time = getTime();
     print(time);
   }
@@ -122,7 +127,7 @@ class DashboardScreenController extends GetxController {
         trxId: trxId.text,
         date: date,
         time: time,
-        network:'',
+        network: '',
       );
       try {
         var response = await http.post(url,
@@ -134,10 +139,13 @@ class DashboardScreenController extends GetxController {
         if (result['result'] == 'true') {
           comnnts.hideDialog();
           comnnts.myToast("Record Successfully Added");
-          msisdn.clear();
-          customerName.clear();
-          amount.clear();
-          trxId.clear();
+
+          // msisdn.clear();
+          // customerName.clear();
+          // amount.clear();
+          // trxId.clear();
+          //
+
           comnnts.confirmDialog();
         } else {
           comnnts.hideDialog();
@@ -229,6 +237,7 @@ class DashboardScreenController extends GetxController {
     SharedPreferences prfs = await SharedPreferences.getInstance();
     prfs.setBool('isConnected', val);
   }
+
   void getTimeAndDate() {
     final DateTime now = DateTime.now();
     nowTime.value = DateFormat('hh:mm:ss a').format(now);
@@ -238,54 +247,59 @@ class DashboardScreenController extends GetxController {
   void tesPrint() async {
     SharedPreferences prfs = await SharedPreferences.getInstance();
     String line = prfs.getString('lastLine')!;
+    var res = await http.get(last_record);
+    var rec = convert.jsonDecode(res.body);
+
+    for (var fetch in data['data']) {
+      datas.add(DashboardModel.fromJson(fetch));
+    }
 
     Get.back();
     bluetooth.isConnected.then((isConnected) {
-      if (isConnected == true) {
-        if(data.selectedAccount=='Post Paid Bill'){
-          bluetooth.printCustom("--------------------------------", 0, 0);
-          bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
-          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
-          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
-          bluetooth.printCustom("Contact:03033111126", 1, 1);
-          bluetooth.printNewLine();
-          bluetooth.printLeftRight("$nowTime", "$date", 0);
-          bluetooth.printCustom("--------------------------------", 0, 0);
-          bluetooth.printLeftRight("MSISDN", data.msisdn, 0);
-          bluetooth.printLeftRight("Account", data.selectedAccount, 0);
-          bluetooth.printLeftRight("Amount", data.amount, 0);
-          bluetooth.printCustom("--------------------------------", 1, 0);
-          bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
-          bluetooth.printCustom(line, 1, 1);
-          bluetooth.printNewLine();
-          bluetooth.printNewLine();
-          bluetooth.paperCut();
-
-        }else{
-          bluetooth.printCustom("---------------------------------", 3, 0);
-          bluetooth.printCustom("Dua  Communication", 5, 1);
-          bluetooth.printNewLine();
-          bluetooth.printCustom("Oppst: Maryam marraige Hall near", 3, 1);
-          bluetooth.printCustom("Zulfiqar Masjid Hirabad", 3, 1);
-          bluetooth.printCustom("Contact:03033111126", 3, 1);
-          bluetooth.printNewLine();
-          bluetooth.printLeftRight("time", "date", 0);
-          bluetooth.printCustom("---------------------------------", 3, 0);
-          bluetooth.printLeftRight("TrxID", data.trxId, 0);
-          bluetooth.printLeftRight("Name", data.customerName, 0);
-          bluetooth.printLeftRight("MSISDN", data.msisdn, 0);
-          bluetooth.printLeftRight("Account", data.selectedAccount, 0);
-          bluetooth.printLeftRight("Amount", data.amount, 0);
-          bluetooth.printCustom("---------------------------------", 3, 0);
-          bluetooth.printCustom("Receipt Charges Rs.10/=", 3, 1);
-          bluetooth.printCustom(line, 3, 1);
-          bluetooth.printNewLine();
-          bluetooth.printNewLine();
-          bluetooth.paperCut();
-        }
-      } else {
-        comnnts.myToast("Please connect your printer!");
-      }
+      // if (isConnected == true) {
+      //   if (datas.selectedAccount == 'Post Paid Bill') {
+      //     bluetooth.printCustom("--------------------------------", 0, 0);
+      //     bluetooth.printCustom("DUA COMMUNICATION", 3, 1);
+      //     bluetooth.printCustom("Oppst: Maryam marraige Hall near", 1, 1);
+      //     bluetooth.printCustom("Zulfiqar Masjid Hirabad", 1, 1);
+      //     bluetooth.printCustom("Contact:03033111126", 1, 1);
+      //     bluetooth.printNewLine();
+      //     bluetooth.printLeftRight("$nowTime", "$date", 0);
+      //     bluetooth.printCustom("--------------------------------", 0, 0);
+      //     bluetooth.printLeftRight("MSISDN", datas.msisdn, 0);
+      //     bluetooth.printLeftRight("Account", datas.selectedAccount, 0);
+      //     bluetooth.printLeftRight("Amount", datas.amount, 0);
+      //     bluetooth.printCustom("--------------------------------", 1, 0);
+      //     bluetooth.printCustom("Receipt Charges Rs.10/=", 1, 1);
+      //     bluetooth.printCustom(line, 1, 1);
+      //     bluetooth.printNewLine();
+      //     bluetooth.printNewLine();
+      //     bluetooth.paperCut();
+      //   } else {
+      //     bluetooth.printCustom("---------------------------------", 3, 0);
+      //     bluetooth.printCustom("Dua  Communication", 5, 1);
+      //     bluetooth.printNewLine();
+      //     bluetooth.printCustom("Oppst: Maryam marraige Hall near", 3, 1);
+      //     bluetooth.printCustom("Zulfiqar Masjid Hirabad", 3, 1);
+      //     bluetooth.printCustom("Contact:03033111126", 3, 1);
+      //     bluetooth.printNewLine();
+      //     bluetooth.printLeftRight("time", "date", 0);
+      //     bluetooth.printCustom("---------------------------------", 3, 0);
+      //     bluetooth.printLeftRight("TrxID", datas.trxId, 0);
+      //     bluetooth.printLeftRight("Name", datas.customerName, 0);
+      //     bluetooth.printLeftRight("MSISDN", datas.msisdn, 0);
+      //     bluetooth.printLeftRight("Account", datas.selectedAccount, 0);
+      //     bluetooth.printLeftRight("Amount", datas.amount, 0);
+      //     bluetooth.printCustom("---------------------------------", 3, 0);
+      //     bluetooth.printCustom("Receipt Charges Rs.10/=", 3, 1);
+      //     bluetooth.printCustom(line, 3, 1);
+      //     bluetooth.printNewLine();
+      //     bluetooth.printNewLine();
+      //     bluetooth.paperCut();
+      //   }
+      // } else {
+      //   comnnts.myToast("Please connect your printer!");
+      // }
     });
   }
 
